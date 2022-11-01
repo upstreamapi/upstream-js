@@ -1,6 +1,6 @@
 import { UpstreamUninitializedError, UpstreamInvalidArgumentError, } from './Errors.js';
 
-export const ExceptionEndpoint = 'http://127.0.0.1:3010/sdk_exception';
+export const ExceptionEndpoint = 'http://api.upstreamapi.com/sdk_exception';
 
 type ExtraDataExtractor = () => Promise<Record<string, unknown>>;
 

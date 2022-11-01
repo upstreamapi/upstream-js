@@ -1,8 +1,6 @@
 import { UpstreamUser } from './UpstreamUser';
-
-// const DEFAULT_FEATURE_GATE_API = 'https://upstreamapi.herokuapp.com/';
-const DEFAULT_FEATURE_GATE_API = 'http://127.0.0.1:3010';
-const DEFAULT_EVENT_LOGGING_API = 'http://127.0.0.1:3010';
+const DEFAULT_FEATURE_GATE_API = 'http://api.upstreamapi.com';
+const DEFAULT_EVENT_LOGGING_API = 'http://api.upstreamapi.com';
 
 export type UpstreamEnvironment = {
   tier?: 'production' | 'staging' | 'development' | string;
