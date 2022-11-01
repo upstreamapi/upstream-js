@@ -4,4 +4,4 @@ Provides convenient access to the [Upstream API](https://www.upstreamapi.com) fr
 
 ### Credit 
 
-This library was forked from the [Statsig](https://github.com/statsig-io/js-client).
+This library was forked from [Statsig](https://github.com/statsig-io/js-client).
