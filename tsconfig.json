@@ -10,6 +10,14 @@
     "skipLibCheck": true,
     "moduleResolution": "node"
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "**/__tests__/*"]
+  "include": ["src/**/*", "src/utils/*"],
+  "exclude": [
+    "node_modules",
+    "typings",
+    "src/__tests__/*",
+    "src/utils/__tests__/*",
+    "dist",
+    "build",
+    "tsconfig.json"
+]
 }

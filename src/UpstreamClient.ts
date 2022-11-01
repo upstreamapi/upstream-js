@@ -1,14 +1,14 @@
-import ErrorBoundary from "./ErrorBoundary.js";
-import UpstreamNetwork from "./Network.js";
-import UpstreamSDKOptions, { UpstreamOptions } from "./UpstreamSDKOptions.js";
-import UpstreamStore from "./UpstreamStore.js";
-import UpstreamIdentity from "./UpstreamIdentity.js";
-import UpstreamLogger from "./UpstreamLogger.js";
-import { UpstreamUser } from "./UpstreamUser.js";
-import { getUserCacheKey } from "./utils/Hashing.js";
-import { AppState, AppStateStatus } from "./AppStates.js";
-import UpstreamAsyncStorage from "./utils/UpstreamAsyncStorage.js";
-import { UpstreamInvalidArgumentError, UpstreamUninitializedError } from "./Errors.js";
+import ErrorBoundary from "./ErrorBoundary";
+import UpstreamNetwork from "./Network";
+import UpstreamSDKOptions, { UpstreamOptions } from "./UpstreamSDKOptions";
+import UpstreamStore from "./UpstreamStore";
+import UpstreamIdentity from "./UpstreamIdentity";
+import UpstreamLogger from "./UpstreamLogger";
+import { UpstreamUser } from "./UpstreamUser";
+import { getUserCacheKey } from "./utils/Hashing";
+import { AppState, AppStateStatus } from "./AppStates";
+import UpstreamAsyncStorage from "./utils/UpstreamAsyncStorage";
+import { UpstreamInvalidArgumentError, UpstreamUninitializedError } from "./Errors";
 
 export type _SDKPackageInfo = { sdkType: string; sdkVersion: string; };
 

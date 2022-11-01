@@ -1,4 +1,4 @@
-import { UpstreamUninitializedError, UpstreamInvalidArgumentError, } from './Errors.js';
+import { UpstreamUninitializedError, UpstreamInvalidArgumentError, } from './Errors';
 
 export const ExceptionEndpoint = 'http://api.upstreamapi.com/sdk_exception';
 
