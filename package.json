@@ -27,6 +27,7 @@
     "dynamic",
     "configs"
   ],
+  "jsdelivr": "build/upstream-web-sdk.js",
   "author": "Upstream API",
   "license": "ISC",
   "bugs": {
