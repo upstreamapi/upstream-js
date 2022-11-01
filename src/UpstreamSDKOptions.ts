@@ -1,6 +1,6 @@
 import { UpstreamUser } from './UpstreamUser';
-const DEFAULT_FEATURE_GATE_API = 'http://api.upstreamapi.com';
-const DEFAULT_EVENT_LOGGING_API = 'http://api.upstreamapi.com';
+const DEFAULT_FEATURE_GATE_API = 'https://api.upstreamapi.com';
+const DEFAULT_EVENT_LOGGING_API = 'https://api.upstreamapi.com';
 
 export type UpstreamEnvironment = {
   tier?: 'production' | 'staging' | 'development' | string;
