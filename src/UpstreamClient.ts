@@ -4,17 +4,22 @@ import UpstreamSDKOptions, { UpstreamOptions } from "./UpstreamSDKOptions";
 import UpstreamStore from "./UpstreamStore";
 import UpstreamIdentity from "./UpstreamIdentity";
 import UpstreamLogger from "./UpstreamLogger";
+import LogEvent from "./LogEvent";
 import { UpstreamUser } from "./UpstreamUser";
 import { getUserCacheKey } from "./utils/Hashing";
 import { AppState, AppStateStatus } from "./AppStates";
 import UpstreamAsyncStorage from "./utils/UpstreamAsyncStorage";
 import { UpstreamInvalidArgumentError, UpstreamUninitializedError } from "./Errors";
 
+const MAX_VALUE_SIZE = 64;
+const MAX_OBJ_SIZE = 2048;
+
 export type _SDKPackageInfo = { sdkType: string; sdkVersion: string; };
 
 export interface IUpstream {
     initializeAsync(): Promise<void>;
     checkGate(gateName: string, ignoreOverrides?: boolean): boolean;
+    logEvent( eventName: string, value?: string | number | null, metadata?: Record<string, string> | null,): void;
     // shutdown(): void; 
     // overrideGate(gateName: string, value: boolean): void; // means will return void
     // removeGateOverride(gateName?: string): void;
@@ -115,7 +120,7 @@ export default class UpstreamClient implements IUpstream, IHasUpstreamInternal {
     }
 
     public getCurrentUserCacheKey(): string {
-        return getUserCacheKey(this.getStableID(),this.getCurrentUser());
+        return getUserCacheKey(this.getStableID(), this.getCurrentUser());
     }
 
     public getUpstreamMetadata(): Record<string, string | number> {
@@ -225,7 +230,7 @@ export default class UpstreamClient implements IUpstream, IHasUpstreamInternal {
 
     public setInitializeValues(initializeValues: Record<string, unknown>): void {
 
-        console.log('setInitValues::',initializeValues)
+        console.log('setInitValues::', initializeValues)
 
         this.errorBoundary.capture(
             'setInitializeValues',
@@ -250,11 +255,11 @@ export default class UpstreamClient implements IUpstream, IHasUpstreamInternal {
 
     private ensureStoreLoaded(): void {
         if (!this.store.isLoaded()) {
-          throw new UpstreamUninitializedError(
-            'Call and wait for initialize() to finish first.',
-          );
+            throw new UpstreamUninitializedError(
+                'Call and wait for initialize() to finish first.',
+            );
         }
-      }
+    }
 
     private async fetchAndSaveValues(
         user: UpstreamUser | null,
@@ -283,6 +288,60 @@ export default class UpstreamClient implements IUpstream, IHasUpstreamInternal {
             .catch((e) => {
                 completionCallback?.(false, e.message);
             });
+    }
+    private shouldTrimParam(
+        entity: string | number | object | null,
+        size: number,
+    ): boolean {
+        if (entity == null) return false;
+        if (typeof entity === 'string') return entity.length > size;
+        if (typeof entity === 'object') {
+            return JSON.stringify(entity).length > size;
+        }
+        if (typeof entity === 'number') return entity.toString().length > size;
+        return false;
+    }
+
+    public logEvent(
+        eventName: string,
+        value: string | number | null = null,
+        metadata: Record<string, string> | null = null,
+    ): void {
+        this.errorBoundary.swallow('logEvent', () => {
+            if (!this.logger || !this.sdkKey) {
+                throw new UpstreamUninitializedError(
+                    'Must initialize() before logging events.',
+                );
+            }
+            if (typeof eventName !== 'string' || eventName.length === 0) {
+                console.error('Event not logged. No valid eventName passed.');
+                return;
+            }
+            if (this.shouldTrimParam(eventName, MAX_VALUE_SIZE)) {
+                console.warn(
+                    'eventName is too long, trimming to ' +
+                    MAX_VALUE_SIZE +
+                    ' characters.',
+                );
+                eventName = eventName.substring(0, MAX_VALUE_SIZE);
+            }
+            if (
+                typeof value === 'string' &&
+                this.shouldTrimParam(value, MAX_VALUE_SIZE)
+            ) {
+                console.warn('value is too long, trimming to ' + MAX_VALUE_SIZE + '.');
+                value = value.substring(0, MAX_VALUE_SIZE);
+            }
+            if (this.shouldTrimParam(metadata, MAX_OBJ_SIZE)) {
+                console.warn('metadata is too big. Dropping the metadata.');
+                metadata = { error: 'not logged due to size too large' };
+            }
+            const event = new LogEvent(eventName);
+            event.setValue(value);
+            event.setMetadata(metadata);
+            event.setUser(this.getCurrentUser());
+            this.logger.log(event);
+        });
     }
 
     // FETCH FROM UPSTREAM API

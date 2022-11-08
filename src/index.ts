@@ -40,4 +40,12 @@ export default class Upstream {
     return Upstream.getClientX().checkGate(gateName, ignoreOverrides);
   }
 
+  public static logEvent(
+    eventName: string,
+    value: string | number | null = null,
+    metadata: Record<string, string> | null = null,
+  ): void {
+    return Upstream.getClientX().logEvent(eventName, value, metadata);
+  }
+
 }
